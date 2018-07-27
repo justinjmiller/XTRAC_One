@@ -34,7 +34,6 @@ public class APIController
 
     @RequestMapping(value = {"","/"}, method = RequestMethod.POST)
     public ResponseEntity createUser(@Valid @RequestBody UserModel user, UriComponentsBuilder ucBuilder, Errors errors) {
-        //todo: try catch
 
         if ( user == null )
         {
