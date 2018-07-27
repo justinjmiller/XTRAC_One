@@ -13,17 +13,17 @@ Dependencies via Maven. a simple mvn package will build the jar, which can then 
 
 ## API Examples
 ### Add a user
-`curl http://localhost:8080/api/users -X "POST" -H "Content-Type: application/json" -d "{\"firstName\":\"justin\",\"lastName\":\"miller\",\"email\":\"justinjmiller@gmail.com\",\"telephone\":\"8015551212\"}"`
+`curl http://localhost:8080/api/users -X "POST" -H "Content-Type: application/json" -d "{\"firstName\":\"justin\",\"lastName\":\"miller\",\"email\":\"someemail@somecompany.com\",\"telephone\":\"8015551212\"}"`
 ### Get a user
-`curl http://localhost:8080/api/users/justinjmiller@gmail.com`
+`curl http://localhost:8080/api/users/someemail@somecompany.com`
 ### Update a user
-`curl http://localhost:8080/api/users/justinjmiller@gmail.com -X "PUT" -H "Content-Type: application/json" -d "{\"firstName\":\"justin\",\"lastName\":\"miller\",\"email\":\"justinjmiller@gmail.com\",\"telephone\":\"8015551212\"}"`
+`curl http://localhost:8080/api/users/someemail@somecompany.com -X "PUT" -H "Content-Type: application/json" -d "{\"firstName\":\"justin\",\"lastName\":\"miller\",\"email\":\"someemail@somecompany.com\",\"telephone\":\"8005551212\"}"`
 ### Delete a user
-`curl http://localhost:8080/api/users/justinjmiller@gmail.com -X "DELETE"`
+`curl http://localhost:8080/api/users/someemail@somecompany.com -X "DELETE"`
 ### Add a user application
-`curl http://localhost:8080/api/users/justinjmiller@gmail.com/applications -X "POST" -H "Content-Type: application/json" -d "{\"name\":\"app name\",\"description\":\"some app description\"}"`
+`curl http://localhost:8080/api/users/someemail@somecompany.com/applications -X "POST" -H "Content-Type: application/json" -d "{\"name\":\"app name\",\"description\":\"some app description\"}"`
 ### Get a users applications
-`curl http://localhost:8080/api/users/justinjmiller@gmail.com/applications`
+`curl http://localhost:8080/api/users/someemail@somecompany.com/applications`
 
 
 
