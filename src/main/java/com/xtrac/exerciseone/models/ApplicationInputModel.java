@@ -1,5 +1,8 @@
 package com.xtrac.exerciseone.models;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+
 /**
  * Created with IntelliJ IDEA.
  * User: jumiller
@@ -8,6 +11,7 @@ package com.xtrac.exerciseone.models;
  */
 public class ApplicationInputModel
 {
+    @NotNull(message = "Application name is required")
     private String name;
     private String description;
 

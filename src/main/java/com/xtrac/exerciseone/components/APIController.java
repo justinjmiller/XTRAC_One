@@ -8,13 +8,17 @@ import com.xtrac.exerciseone.services.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import javax.validation.Valid;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Date: 7/24/2018
@@ -30,9 +34,24 @@ public class APIController
     UserService service;
 
     @RequestMapping(value = {"","/"}, method = RequestMethod.POST)
-    public ResponseEntity createUser(@RequestBody UserModel user, UriComponentsBuilder ucBuilder) {
-        //todo: validate input
+    public ResponseEntity createUser(@Valid @RequestBody UserModel user, UriComponentsBuilder ucBuilder, Errors errors) {
         //todo: try catch
+
+        if ( user == null )
+        {
+            logger.info("Unable to create user record. User data missing");
+            return new ResponseEntity(new MessageModel("Unable to create an account. User data missing."),HttpStatus.BAD_REQUEST);
+        }
+
+        if ( errors.hasErrors())
+        {
+            String error = errors.getAllErrors()
+                    .stream()
+                    .map(DefaultMessageSourceResolvable::getDefaultMessage)
+                    .collect(Collectors.joining(","));
+            logger.info("Unable to create user record. User data invalid. " + error);
+            return new ResponseEntity(new MessageModel("Unable to create an account. User data missing. " + error),HttpStatus.BAD_REQUEST);
+        }
 
         logger.info("Create a user ('{}')", user.getEmail());
 
@@ -42,7 +61,17 @@ public class APIController
                     user.getEmail() + " already exist."),HttpStatus.CONFLICT);
         }
 
-        service.saveUser(user);
+        try
+        {
+            service.saveUser(user);
+        }
+        catch (Exception ex)
+        {
+            logger.error("Error saving user - " + ex.getMessage(),ex);
+            return new ResponseEntity(new MessageModel("Unable to create an account. An unexpected error occurred."),
+                    HttpStatus.INTERNAL_SERVER_ERROR);
+
+        }
 
         HttpHeaders headers = new HttpHeaders();
         headers.setLocation(ucBuilder.path("/api/users/{email}").buildAndExpand(user.getEmail()).toUri());
@@ -62,8 +91,18 @@ public class APIController
     }
 
     @RequestMapping(value = "/{email}", method = RequestMethod.PUT)
-    public ResponseEntity updateUser(@PathVariable String email, @RequestBody UserModel user){
+    public ResponseEntity updateUser(@PathVariable String email, @Valid @RequestBody UserModel user, Errors errors){
         logger.info("Updating user with email {}", email);
+
+        if ( errors.hasErrors())
+        {
+            String error = errors.getAllErrors()
+                    .stream()
+                    .map(DefaultMessageSourceResolvable::getDefaultMessage)
+                    .collect(Collectors.joining(","));
+            logger.info("Unable to update user record. User data invalid. " + error);
+            return new ResponseEntity(new MessageModel("Unable to update account. User data missing. " + error),HttpStatus.BAD_REQUEST);
+        }
 
         UserModel currentUser = service.findByEmail(email);
 
@@ -73,13 +112,22 @@ public class APIController
                     HttpStatus.NOT_FOUND);
         }
 
-        //todo: validate input
 
         currentUser.setFirstName(user.getFirstName());
         currentUser.setLastName(user.getLastName());
         currentUser.setTelephone(user.getTelephone());
 
-        service.updateUser(currentUser);
+        try
+        {
+            service.saveUser(user);
+        }
+        catch (Exception ex)
+        {
+            logger.error("Error saving user - " + ex.getMessage(),ex);
+            return new ResponseEntity(new MessageModel("Unable to create an account. An unexpected error occurred."),
+                    HttpStatus.INTERNAL_SERVER_ERROR);
+
+        }
         return new ResponseEntity<UserModel>(currentUser, HttpStatus.OK);
     }
 
@@ -98,7 +146,7 @@ public class APIController
     }
 
     @RequestMapping(value = "/{email}/applications", method = RequestMethod.POST)
-    public ResponseEntity createApplication(@PathVariable String email, @RequestBody ApplicationInputModel application)
+    public ResponseEntity createApplication(@PathVariable String email, @Valid @RequestBody ApplicationInputModel application)
     {
         logger.info("Creating application named '{}' for user '{}'", application.getName(), email);
 
@@ -108,8 +156,7 @@ public class APIController
                     email + "' doesn't exist."),HttpStatus.BAD_REQUEST);
         }
 
-        //todo: validate input
-        service.addUserApplication(application);
+        service.addUserApplication(email, application);
 
         return new ResponseEntity<String>(HttpStatus.CREATED);    }
 

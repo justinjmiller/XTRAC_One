@@ -1,5 +1,10 @@
 package com.xtrac.exerciseone.models;
 
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
+
 /**
  * Created with IntelliJ IDEA.
  * User: jumiller
@@ -8,9 +13,14 @@ package com.xtrac.exerciseone.models;
  */
 public class UserModel
 {
+
+    @Email(message = "Invalid email")
     private String email;
+    @NotNull(message = "First Name must be provided")
     private String firstName;
+    @NotNull(message = "Last Name must be provided")
     private String lastName;
+    @Pattern(regexp="(^$|[0-9]{10})")
     private String telephone;
 
     public String getEmail()
