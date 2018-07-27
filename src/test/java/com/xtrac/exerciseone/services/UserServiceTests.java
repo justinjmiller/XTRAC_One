@@ -1,8 +1,12 @@
 package com.xtrac.exerciseone.services;
 
+import com.xtrac.exerciseone.models.ApplicationInputModel;
+import com.xtrac.exerciseone.models.ApplicationModel;
 import com.xtrac.exerciseone.models.UserModel;
 import org.junit.Assert;
 import org.junit.Test;
+
+import java.util.List;
 
 /**
  * Created with IntelliJ IDEA.
@@ -32,5 +36,15 @@ public class UserServiceTests
         Assert.assertNull(users.findByEmail("test@test.com"));
     }
 
-    //todo: tests for adding / getting applications
+    @Test
+    public void testAddUserApplication() throws Exception
+    {
+        ApplicationInputModel app = new ApplicationInputModel();
+        app.setDescription("Some test app");
+        app.setName("test");
+        users.addUserApplication("justin@test.com", app);
+        List<ApplicationModel> apps = users.getUserApplications("justin@test.com");
+        Assert.assertTrue(apps.size() > 0);
+    }
+
 }

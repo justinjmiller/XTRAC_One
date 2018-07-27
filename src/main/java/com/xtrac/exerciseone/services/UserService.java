@@ -8,6 +8,7 @@ import com.xtrac.exerciseone.models.UserModel;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * Created with IntelliJ IDEA.
@@ -61,7 +62,10 @@ public class UserService
     public void addUserApplication(String email, ApplicationInputModel application)
     {
         ApplicationModel app = new ApplicationModel();
-        //todo: genereate key and code
+        UUID id = UUID.randomUUID();
+        UUID secret = UUID.randomUUID();
+        app.setId(id.toString());
+        app.setSecret(secret.toString());
         app.setName(application.getName());
         app.setDescription(application.getDescription());
         users.get(email).getApps().put(application.getName(),app);

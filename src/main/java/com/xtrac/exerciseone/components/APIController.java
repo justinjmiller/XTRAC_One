@@ -30,8 +30,7 @@ public class APIController
 {
     private static final Logger logger = LoggerFactory.getLogger(APIController.class);
 
-    @Autowired
-    UserService service;
+    UserService service = new UserService();
 
     @RequestMapping(value = {"","/"}, method = RequestMethod.POST)
     public ResponseEntity createUser(@Valid @RequestBody UserModel user, UriComponentsBuilder ucBuilder, Errors errors) {
